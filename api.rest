@@ -1,0 +1,46 @@
+### add user 
+POST http://localhost:3000/user
+Content-Type: application/json
+
+{
+  "forename": "Ada",
+  "surname": "Lovelace"
+}
+
+
+###.   request for all users 
+GET http://localhost:3000/user
+
+
+### request for user by id 
+GET http://localhost:3000/user/3
+
+
+
+### update user by id 
+PUT http://localhost:3000/user/1
+Content-Type: application/json
+
+{
+  "forename": "Roy",
+  "surname": "Updated"
+}
+
+
+### delete user 
+DELETE http://localhost:3000/user/3
+
+
+### search user by name 
+POST http://localhost:3000/user/search
+Content-Type: application/json
+
+{
+  "forename": "Roy"
+}
+
+### 
+POST http://localhost:3000/user
+Content-Type: text/plain
+
+{ "forename": "Roy" }
