@@ -1,0 +1,148 @@
+openapi: 3.0.3
+info:
+  title: Data Service API
+  version: 1.0.0
+  description: |
+    API for storing, querying, updating, and deleting data entries.
+servers:
+  - url: http://localhost:3000
+
+paths:
+  /data:
+    get:
+      summary: Get all data entries
+      responses:
+        '200':
+          description: List of all data entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DataOutput'
+
+    post:
+      summary: Create a new data entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataInput'
+      responses:
+        '201':
+          description: Data created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataOutput'
+        '415':
+          description: Unsupported Media Type
+
+  /data/query:
+    post:
+      summary: Query data entries by fields
+      description: Returns any entries matching the provided query body.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataQuery'
+      responses:
+        '200':
+          description: Query result list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DataOutput'
+
+  /data/{id}:
+    get:
+      summary: Get a specific data entry by ID
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Data entry found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataOutput'
+        '404':
+          description: Not found
+
+    put:
+      summary: Update a data entry by ID
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataInput'
+      responses:
+        '200':
+          description: Updated data entry
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataOutput'
+        '404':
+          description: Not found
+
+    delete:
+      summary: Delete a specific data entry by ID
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Successfully deleted
+        '404':
+          description: Not found
+
+components:
+  parameters:
+    IdParam:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+
+  schemas:
+    DataInput:
+      type: object
+      required:
+        - forename
+        - surname
+      properties:
+        forename:
+          type: string
+          example: Ada
+        surname:
+          type: string
+          example: Lovelace
+
+    DataOutput:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+        - $ref: '#/components/schemas/DataInput'
+
+    DataQuery:
+      type: object
+      description: Object for filtering results. Any field is optional.
+      properties:
+        forename:
+          type: string
+          example: Roy
+        surname:
+          type: string
+          example: Updated
